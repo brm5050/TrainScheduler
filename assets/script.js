@@ -27,7 +27,7 @@ $("#addTrainButton").on("click", function(event) {
 	  var trainName = $("#train-name").val().trim();
 	  var destination = $("#destination").val().trim();
 	  //store it as time with HH:mm
-	  var trainTime = moment($("#first-train-time").val().trim(), "HH:mm").format("X");
+	  var trainTime = moment($("#first-train-time").val().trim(), "HH:mm").format("X"); 
 	  var frequency = $("#frequency").val().trim();
 //create a new variable on DOM consisting of the user inputted info
 	    var newTrain = {
@@ -52,7 +52,7 @@ $("#addTrainButton").on("click", function(event) {
 
 });
 //example taken from saturday class
-database.ref().on("child_added", function(childSnapshot, prevChildKey) {
+database.ref().on("child_added", function(childSnapshot) {
 
   console.log(childSnapshot.val());
 
@@ -62,13 +62,13 @@ database.ref().on("child_added", function(childSnapshot, prevChildKey) {
   var trainTime = childSnapshot.val().firstTrainTime;
   var frequency = childSnapshot.val().frequency;
 
-  var timeDifference = moment().diff(moment.unix(trainTime), "minutes");
+  var timeDifference = moment().diff(moment(trainTime), "minutes");
   //calculate remainder from time difference
   var remainder = timeDifference % frequency;
   //when the next train will be arriving
   var arrivalTime = frequency - remainder;
   //show that time as HHmm 
-  var nextTrain = moment().add(arrivalTime, "m").format("hh:mm A");
+  var nextTrain = moment().add(arrivalTime).format("hh:mm");
 
   console.log(trainName);
   console.log(destination);
@@ -76,7 +76,7 @@ database.ref().on("child_added", function(childSnapshot, prevChildKey) {
   console.log(frequency);
 
 
-  // Add each train's data into the table
+  // Add each train's data into the table HTML
   $("#trainTable > tbody").append("<tr><td>" + trainName + "</td><td>" + destination + "</td><td>" +
   frequency + "</td><td>" + nextTrain + "</td><td>" + arrivalTime + "</td><td>");
 });
